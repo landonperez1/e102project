@@ -12,14 +12,14 @@ def login():
     acc = input("Enter Account Number: ")
     pin = input("Enter PIN: ")
     cursor.execute("SELECT * FROM accounts WHERE account_number = %s AND pin = %s", (acc, pin))
-    user = cursor.fetchone()
-    if user:
+    usr = cursor.fetchone()
+    if usr:
         print("\nLogin successful!\n")
-        user_menu(user[0])
+        usr_menu(usr[0])
     else:
         print("\nInvalid account number or PIN!\n")
 
-def user_menu(account_number):
+def usr_menu(acc_num):
     while True:
         print("1. Check Balance")
         print("2. Deposit")
@@ -27,39 +27,39 @@ def user_menu(account_number):
         print("4. Logout")
         choice = input("Choose an option: ")
         if choice == '1':
-            check_balance(account_number)
+            chk_bal(acc_num)
         elif choice == '2':
-            deposit(account_number)
+            dpt(acc_num)
         elif choice == '3':
-            withdraw(account_number)
+            wthdrw(acc_num)
         elif choice == '4':
             break
         else:
             print("Invalid option!")
 
-def check_balance(account_number):
-    cursor.execute("SELECT balance FROM accounts WHERE account_number = %s", (account_number,))
-    balance = cursor.fetchone()[0]
-    print(f"\nYour current balance is: ${balance}\n")
+def chk_bal(acc_num):
+    cursor.execute("SELECT balance FROM accounts WHERE account_number = %s", (acc_num,))
+    bal = cursor.fetchone()[0]
+    print(f"\nYour current balance is: ${bal}\n")
 
-def deposit(account_number):
-    amount = float(input("Enter amount to deposit: "))
-    cursor.execute("UPDATE accounts SET balance = balance + %s WHERE account_number = %s", (amount, account_number))
+def dpt(acc_num):
+    amt = float(input("Enter amount to deposit: "))
+    cursor.execute("UPDATE accounts SET balance = balance + %s WHERE account_number = %s", (amt, acc_num))
     conn.commit()
     print("\nDeposit successful!\n")
 
-def withdraw(account_number):
-    amount = float(input("Enter amount to withdraw: "))
-    cursor.execute("SELECT balance FROM accounts WHERE account_number = %s", (account_number,))
-    balance = cursor.fetchone()[0]
-    if amount > balance:
+def wthdrw(acc_num):
+    amt = float(input("Enter amount to withdraw: "))
+    cursor.execute("SELECT balance FROM accounts WHERE account_number = %s", (acc_num,))
+    bal = cursor.fetchone()[0]
+    if amt > bal:
         print("\nInsufficient balance!\n")
     else:
-        cursor.execute("UPDATE accounts SET balance = balance - %s WHERE account_number = %s", (amount, account_number))
+        cursor.execute("UPDATE accounts SET balance = balance - %s WHERE account_number = %s", (amt, acc_num))
         conn.commit()
         print("\nWithdrawal successful!\n")
 
-def create_account():
+def crt_acc():
     acc = input("Enter new account number: ")
     pin = input("Set a 4-digit PIN: ")
     name = input("Enter your name: ")
@@ -67,13 +67,13 @@ def create_account():
     conn.commit()
     print("\nAccount created successfully!\n")
 
-def close_account():
+def cls_acc():
     acc = input("Enter account number to close: ")
     cursor.execute("DELETE FROM accounts WHERE account_number = %s", (acc,))
     conn.commit()
     print("\nAccount closed successfully!\n")
 
-def modify_account():
+def mod_acc():
     acc = input("Enter account number to modify: ")
     print("1. Change Name")
     print("2. Change PIN")
@@ -99,13 +99,13 @@ while True:
     print("5. Exit")
     choice = input("Choose an option: ")
     if choice == '1':
-        login()
+        ln()
     elif choice == '2':
-        create_account()
+        crt_acc()
     elif choice == '3':
-        close_account()
+        cls_acc()
     elif choice == '4':
-        modify_account()
+        mod_acc()
     elif choice == '5':
         break
     else:
